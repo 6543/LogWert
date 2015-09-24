@@ -3,7 +3,7 @@
 
         ##############################################################
         ##                                                          ##
-        ##  logwert.ps1                            version. 1.1     ##
+        ##  logwert.ps1                            version. 1.2     ##
         ##                                                          ##
         ##  Dies ist ein Hilfsscript fuer _shares_spiegeln.bat      ##
         ##  und der Nachfolger des CMD-Scriptes "logwert.cmd",      ##
@@ -49,46 +49,54 @@ $sLine = $sLine.replace("`"", "#")
 $sLine = $sLine.replace(",", "#")
 $sLine = $sLine.replace("Insgesamt:", "")
 
-#Anomalien ausschließen
-while(" ".Equals($sLine.Substring(0,1))) {$sLine = $sLine.Substring(1, $sLine.Length - 1)}                  #Wenn String Mit Lehrzeichen beginnt entfernen
-while("#".Equals($sLine.Substring(0,1))) {$sLine = $sLine.Substring(1, $sLine.Length - 1)}                  #Wenn String Mit Trenzeichen beginnt entfernen
-while(" ".Equals($sLine.Substring($sLine.Length - 1,1))) {$sLine = $sLine.Substring(0, $sLine.Length - 1)}  #Wenn String Mit Lehrzeichen endet entfernen
-while("#".Equals($sLine.Substring($sLine.Length - 1,1))) {$sLine = $sLine.Substring(0, $sLine.Length - 1)}  #Wenn String Mit Trenzeichen endet entfernen
-while($sLine.IndexOf("##") -gt -1 ) {$sLine = $sLine.Replace("##", "#")}                                    #Mehrere hintereinander folgende Trenzeichen entfernen
-while($sLine.IndexOf("  ") -gt -1 ) {$sLine = $sLine.Replace("  ", " ")}                                    #Mehrere hintereinander folgende Lehrzeichen entfernen
+if($sLine -match "[0-z]") {
 
-$sLine.Split("#") | ForEach-Object { WichCase $_ }
+
+ ###Anomalien ausschließen
+
+ while(" ".Equals($sLine.Substring(0,1))) {$sLine = $sLine.Substring(1, $sLine.Length - 1)}
+ #Wenn String Mit Lehrzeichen beginnt entfernen
+ while("#".Equals($sLine.Substring(0,1))) {$sLine = $sLine.Substring(1, $sLine.Length - 1)}
+ #Wenn String Mit Trenzeichen beginnt entfernen
+ while(" ".Equals($sLine.Substring($sLine.Length - 1,1))) {$sLine = $sLine.Substring(0, $sLine.Length - 1)}
+ #Wenn String Mit Lehrzeichen endet entfernen
+ while("#".Equals($sLine.Substring($sLine.Length - 1,1))) {$sLine = $sLine.Substring(0, $sLine.Length - 1)}
+ #Wenn String Mit Trenzeichen endet entfernen
+ while($sLine.IndexOf("##") -gt -1 ) {$sLine = $sLine.Replace("##", "#")}
+ #Mehrere hintereinander folgende Trenzeichen entfernen
+ while($sLine.IndexOf("  ") -gt -1 ) {$sLine = $sLine.Replace("  ", " ")}
+ #Mehrere hintereinander folgende Lehrzeichen entfernen
+ $sLine.Split("#") | ForEach-Object { WichCase $_ }
+ }
 } #Zeilenweise auswertung
 
 function WichCase ([String]$sToken) {
-if( -not ("".Equals("$sToken") -and " ".Equals("$sToken"))) {
- while(" ".Equals($sToken.Substring(0,1))) {$sToken = $sToken.Substring(1, $sToken.Length - 1)}                  #Lehrzeichen vor werten entfernen
- while(" ".Equals($sToken.Substring($sToken.Length - 1,1))) {$sToken = $sToken.Substring(0, $sToken.Length - 1)} #Lehrzeichen nach werten entfernen
+
+if($sToken -match "[0-z]") {
+
+ while(" ".Equals($sToken.Substring(0,1))) {$sToken = $sToken.Substring(1, $sToken.Length - 1)}
+ #Lehrzeichen vor werten entfernen
+ while(" ".Equals($sToken.Substring($sToken.Length - 1,1))) {$sToken = $sToken.Substring(0, $sToken.Length - 1)}
+ #Lehrzeichen nach werten entfernen
 
  $aToken = $sToken.Split(" ")
 
  # Count_Copy_errors
- If("Fehler".Equals($aToken[1])) {
-  if ($aToken[0] -notmatch "[a-z]") {
-   [Double]$Global:zLog_Copy_errors = [Double]$Global:zLog_Copy_errors + $aToken[0]
-   }
+ If(("Fehler".Equals($aToken[1])) -and ($aToken[0] -notmatch "[a-z]")) {
+  [Double]$Global:zLog_Copy_errors = [Double]$Global:zLog_Copy_errors + $aToken[0]
   }
 
  # Count_Items
- ElseIf("von".Equals($aToken[1]) -and ("Dateien".Equals($aToken[3]))) {
-  if (($aToken[0] -notmatch "[a-z]") -and  ($aToken[2] -notmatch "[a-z]")) {
+ If(("von".Equals($aToken[1])) -and ("Dateien".Equals($aToken[3])) -and ($aToken[0] -notmatch "[a-z]") -and  ($aToken[2] -notmatch "[a-z]")) {
   [Double]$Global:zLog_Copy_item += $aToken[2]
   [Double]$Global:zLog_Copy_real_item += $aToken[0]
   }
  }
 
  # Count_Size
- ElseIf("von".Equals($aToken[2]) -and ("kopiert".Equals($aToken[5])) ) {
-  if (($aToken[0] -notmatch "[a-z]") -and  ($aToken[3] -notmatch "[a-z]")) {
-   [Double]$Global:zLog_Copy_Size += (Calc_Byte_Sice $aToken[3] $aToken[4] b)
-   [Double]$Global:zLog_Copy_real_Size += (Calc_Byte_Sice $aToken[0] $aToken[1] b)
-   }
-  }
+ If(("von".Equals($aToken[2])) -and ("kopiert".Equals($aToken[5])) -and ($aToken[0] -notmatch "[a-z]") -and  ($aToken[3] -notmatch "[a-z]") ){# -and ($aToken[1] -match "[b,k,m,g,t]") -and ($aToken[4] -match "[b,k,m,g,t]")) {
+  [Double]$Global:zLog_Copy_Size += (Calc_Byte_Sice $aToken[3] $aToken[4] b)
+  [Double]$Global:zLog_Copy_real_Size += (Calc_Byte_Sice $aToken[0] $aToken[1] b)
  }
 } #Übergabe der Zeile; Auswertung; Speicherung in Globale Variablen
 
