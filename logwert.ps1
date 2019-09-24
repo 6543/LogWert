@@ -168,4 +168,4 @@ $args | ForEach-Object { Log_Start $_ }
 [String]$sLog_Copy_real_item = "$Global:zLog_Copy_real_item"
 [String]$sLog_Copy_Size_Einheit = "$Global:Log_Copy_Size_Einheit"
 
-echo "Insgesamt: $sLog_Copy_real_item von $sLog_Copy_item Dateien kopiert, $sLog_Copy_errors Fehler, $sLog_Copy_real_Size $sLog_Copy_Size_Einheit von $sLog_Copy_Size $sLog_Copy_Size_Einheit kopiert"
+echo "Summary: $sLog_Copy_real_item of $sLog_Copy_item files copied, $sLog_Copy_errors errors, $sLog_Copy_real_Size $sLog_Copy_Size_Einheit of $sLog_Copy_Size $sLog_Copy_Size_Einheit copied"
