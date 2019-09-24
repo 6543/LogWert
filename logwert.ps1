@@ -158,6 +158,12 @@ function Calc_Byte_Sice ([Double]$Wert, [String]$EinheitEingabe, [String]$Einhei
 
 ##########################################################################################################
 
+If ($args[0] -eq "--version") {
+  echo "Version: 1.2"
+} ElseIf ($args[0] -eq "--help") {
+  echo "./logwert.ps1 [log1] [log2] ..."
+} Else {
+
 #for each param do start(param)
 $args | ForEach-Object { Log_Start $_ }
 
@@ -169,3 +175,5 @@ $args | ForEach-Object { Log_Start $_ }
 [String]$sLog_Copy_Size_Einheit = "$Global:Log_Copy_Size_Einheit"
 
 echo "Summary: $sLog_Copy_real_item of $sLog_Copy_item files copied, $sLog_Copy_errors errors, $sLog_Copy_real_Size $sLog_Copy_Size_Einheit of $sLog_Copy_Size $sLog_Copy_Size_Einheit copied"
+
+}
