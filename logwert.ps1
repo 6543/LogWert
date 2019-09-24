@@ -34,16 +34,16 @@
 
 ###################################  Functionen  ##########################################################
 
-function Log_Start ([String]$sLogPfad){
- If(Test-Path $sLogPfad) {                #Testen Ob Datei Existiert
+function Log_Start ([String]$sLogpath){
+ If(Test-Path $sLogpath) {                #test if file exists
  $tmp = ""
- $tmp = Get-Content $sLogPfad             #Inhalt in Array
- $tmp | ForEach-Object { Log_Main $_ }    #Jede Zeile des 1D Arrays einzeln Bearbeiten
+ $tmp = Get-Content $sLogpath             #copy file into list
+ $tmp | ForEach-Object { Log_Main $_ }    #process each line
  }
-} #Starte Verarbeitung
+} # start processing
 
 function Log_Main ([String]$sLine){
-#Trenn Zeichen Setzen
+# separate Set character
 $sLine = $sLine.replace("`"", "#")
 $sLine = $sLine.replace(",", "#")
 $sLine = $sLine.replace("Insgesamt:", "")
@@ -51,32 +51,32 @@ $sLine = $sLine.replace("Insgesamt:", "")
 if($sLine -match "[0-z]") {
 
 
- ###Anomalien ausschließen
+ ### rule out anomalies
 
  while(" ".Equals($sLine.Substring(0,1))) {$sLine = $sLine.Substring(1, $sLine.Length - 1)}
- #Wenn String Mit Lehrzeichen beginnt entfernen
+ #Remove when String Begins with Lehrzeichen
  while("#".Equals($sLine.Substring(0,1))) {$sLine = $sLine.Substring(1, $sLine.Length - 1)}
- #Wenn String Mit Trenzeichen beginnt entfernen
+ #If string begins with delimiter remove
  while(" ".Equals($sLine.Substring($sLine.Length - 1,1))) {$sLine = $sLine.Substring(0, $sLine.Length - 1)}
- #Wenn String Mit Lehrzeichen endet entfernen
+ #If String Ends with Lehrzeichen Remove String
  while("#".Equals($sLine.Substring($sLine.Length - 1,1))) {$sLine = $sLine.Substring(0, $sLine.Length - 1)}
- #Wenn String Mit Trenzeichen endet entfernen
+ #Remove if string ends with delimiters
  while($sLine.IndexOf("##") -gt -1 ) {$sLine = $sLine.Replace("##", "#")}
- #Mehrere hintereinander folgende Trenzeichen entfernen
+ #Remove several following delimiters in a row
  while($sLine.IndexOf("  ") -gt -1 ) {$sLine = $sLine.Replace("  ", " ")}
- #Mehrere hintereinander folgende Lehrzeichen entfernen
+ #Remove several following characters in a row
  $sLine.Split("#") | ForEach-Object { WichCase $_ }
  }
-} #Zeilenweise auswertung
+} #Line by line evaluation
 
 function WichCase ([String]$sToken) {
 
 if($sToken -match "[0-z]") {
 
  while(" ".Equals($sToken.Substring(0,1))) {$sToken = $sToken.Substring(1, $sToken.Length - 1)}
- #Lehrzeichen vor werten entfernen
+ #remove blank before rating
  while(" ".Equals($sToken.Substring($sToken.Length - 1,1))) {$sToken = $sToken.Substring(0, $sToken.Length - 1)}
- #Lehrzeichen nach werten entfernen
+ #remove blank avter rating
 
  $aToken = $sToken.Split(" ")
 
@@ -97,14 +97,14 @@ if($sToken -match "[0-z]") {
   [Double]$Global:zLog_Copy_Size += (Calc_Byte_Sice $aToken[3] $aToken[4] b)
   [Double]$Global:zLog_Copy_real_Size += (Calc_Byte_Sice $aToken[0] $aToken[1] b)
  }
-} #Übergabe der Zeile; Auswertung; Speicherung in Globale Variablen
+} #Transfer of the line; evaluation; storage in global variables
 
 function Calc_Byte_Sice ([Double]$Wert, [String]$EinheitEingabe, [String]$EinheitAusgabe ) {
 
-#Calc_Byte_Sice:  [Wert] [Einheit-Ausgabe] [Einheit-Eingabe]
-# Wenn bei Einheit etwas anderes als KB,MB,GB,TB eingebeben Wird, Wird mit Bytes gerechnet
+#Calc_Byte_Sice:  [value] [unit outpute] [unit input]
+# If you enter something other than KB,MB,GB,TB for unit, it is calculated with bytes.
 
-#fertieren der unterschiedlichen Groeßenangaben (umrechnungseinheit= 1024)
+#fertieren the different size specifications (conversion unit= 1024)
 # b (=Bytes), k (=Kilobytes), m (=Megabytes), g (=Gigabytes) und t (=Terabytes)
 
  If("".Equals("$Wert") -and "0".Equals("$Wert")) {return 0} else {
@@ -119,7 +119,7 @@ function Calc_Byte_Sice ([Double]$Wert, [String]$EinheitEingabe, [String]$Einhei
   $EinheitAusgabe = ($EinheitAusgabe.substring(0,1)).replace("G","g")
   $EinheitAusgabe = ($EinheitAusgabe.substring(0,1)).replace("T","t")
 
-  # Abfangen von Größenangaben die es nicht giebt/die nicht behandelt werden
+  # Catching size information that does not exist/that are not handled
   If ( -not ("b".Equals("$EinheitAusgabe") -or "k".Equals("$EinheitAusgabe") -or "m".Equals("$EinheitAusgabe") -or "g".Equals("$EinheitAusgabe") -or "t".Equals("$EinheitAusgabe"))) {$EinheitAusgabe = "else"}
   If ( -not ("b".Equals("$EinheitEingabe") -or "k".Equals("$EinheitEingabe") -or "m".Equals("$EinheitEingabe") -or "g".Equals("$EinheitEingabe") -or "t".Equals("$EinheitEingabe"))) {$EinheitEingabe = "else"}
 
@@ -154,7 +154,7 @@ function Calc_Byte_Sice ([Double]$Wert, [String]$EinheitEingabe, [String]$Einhei
   }
   return $Wert
  }
-} #[Wert] [Einheit-Ausgabe] [Einheit-Eingabe]
+} #[value] [unit outpute] [unit input]
 
 ##########################################################################################################
 
