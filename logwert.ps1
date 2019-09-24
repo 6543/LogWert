@@ -5,11 +5,10 @@
         ##                                                          ##
         ##  logwert.ps1                            version. 1.2     ##
         ##                                                          ##
-        ##  Dies ist ein Hilfsscript fuer _shares_spiegeln.bat      ##
-        ##  und der Nachfolger des CMD-Scriptes "logwert.cmd",      ##
-        ##  Es wertet die Robologfile aus und fast diese zusammen.  ##
+        ##  This is a smal help script                              ##
+        ##  It evaluates robocopy logs and summarizes them          ##
         ##                                                          ##
-        ##  @parameter: [Pfad-Log1] [Pfad-Log2] [Pfad-Log3] ...	    ##
+        ##  @parameter: [path-log1] [path-log2] [path-log3] ...     ##
         ##                                                          ##
         ##  @author:  Martin.Huber@stbaro.bayern.de                 ##
         ##                                                          ##
