@@ -158,14 +158,22 @@ function Calc_Byte_Sice ([Double]$Wert, [String]$EinheitEingabe, [String]$Einhei
 
 ##########################################################################################################
 
-#for each param do start(param)
-$args | ForEach-Object { Log_Start $_ }
+If ($args[0] -eq "--version") {
+  echo "Version: 1.2"
+} ElseIf ($args[0] -eq "--help") {
+  echo "./logwert.ps1 [log1] [log2] ..."
+} Else {
 
-[String]$sLog_Copy_errors = "$Global:zLog_Copy_errors"
-[String]$sLog_Copy_Size = [math]::round((Calc_Byte_Sice $Global:zLog_Copy_Size b $Global:Log_Copy_Size_Einheit), 2)
-[String]$sLog_Copy_real_Size = [math]::round((Calc_Byte_Sice $Global:zLog_Copy_real_Size b $Global:Log_Copy_Size_Einheit), 2)
-[String]$sLog_Copy_item = "$Global:zLog_Copy_item"
-[String]$sLog_Copy_real_item = "$Global:zLog_Copy_real_item"
-[String]$sLog_Copy_Size_Einheit = "$Global:Log_Copy_Size_Einheit"
+  #for each param do start(param)
+  $args | ForEach-Object { Log_Start $_ }
 
-echo "Summary: $sLog_Copy_real_item of $sLog_Copy_item files copied, $sLog_Copy_errors errors, $sLog_Copy_real_Size $sLog_Copy_Size_Einheit of $sLog_Copy_Size $sLog_Copy_Size_Einheit copied"
+  [String]$sLog_Copy_errors = "$Global:zLog_Copy_errors"
+  [String]$sLog_Copy_Size = [math]::round((Calc_Byte_Sice $Global:zLog_Copy_Size b $Global:Log_Copy_Size_Einheit), 2)
+  [String]$sLog_Copy_real_Size = [math]::round((Calc_Byte_Sice $Global:zLog_Copy_real_Size b $Global:Log_Copy_Size_Einheit), 2)
+  [String]$sLog_Copy_item = "$Global:zLog_Copy_item"
+  [String]$sLog_Copy_real_item = "$Global:zLog_Copy_real_item"
+  [String]$sLog_Copy_Size_Einheit = "$Global:Log_Copy_Size_Einheit"
+
+  echo "Summary: $sLog_Copy_real_item of $sLog_Copy_item files copied, $sLog_Copy_errors errors, $sLog_Copy_real_Size $sLog_Copy_Size_Einheit of $sLog_Copy_Size $sLog_Copy_Size_Einheit copied"
+
+}
