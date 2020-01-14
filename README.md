@@ -6,5 +6,5 @@
 
 Summarizes the RoboCopy Log's
 
-exec it:
->  ./logwert.ps1 [path-log1] [path-log2] [path-log3] ...  
+exec it:  
+`./logwert.ps1 [path-log1] [path-log2] [path-log3] ... `
