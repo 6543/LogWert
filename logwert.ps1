@@ -10,7 +10,7 @@
         ##                                                          ##
         ##  @parameter: [path-log1] [path-log2] [path-log3] ...     ##
         ##                                                          ##
-        ##  @author:  Martin.Huber@stbaro.bayern.de                 ##
+        ##  @author:  6543@obermui.de                               ##
         ##                                                          ##
         ##############################################################
 
